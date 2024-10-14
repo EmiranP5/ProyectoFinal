@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import modelo.Cliente;
 
 /**
  *
@@ -37,7 +38,17 @@ public class sr_cliente extends HttpServlet {
             out.println("<title>Servlet sr_cliente</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet sr_cliente at " + request.getContextPath() + "</h1>");
+            
+            if("agregar".equals(request.getParameter("btn_agregar"))){
+            Cliente cliente = new Cliente(request.getParameter("txt_correo"),request.getParameter("txt_fecha_registro"),Integer.parseInt(request.getParameter("drop_genero")),request.getParameter("txt_nombres"),request.getParameter("txt_apellidos"),request.getParameter("txt_nit"),request.getParameter("txt_telefono"));
+                    if(cliente.agregar()>0){
+                        response.sendRedirect("Clientes.jsp");
+                    }else{
+                        out.println("<h1>Error al insertar el registro</h1>");
+                        out.println("<a href ='Clientes.jsp'>Regresar</a>");
+                    }
+            }
+            
             out.println("</body>");
             out.println("</html>");
         }

@@ -20,6 +20,14 @@ abstract public class Persona {
         this.direccion = direccion;
         this.telefono = telefono;
     }
+
+    public Persona(String nombres, String apellidos, String nit, String telefono) {
+        this.nombres = nombres;
+        this.apellidos = apellidos;
+        this.nit = nit;
+        this.telefono = telefono;
+    }
+    
     
     public String getNombres() {
         return nombres;

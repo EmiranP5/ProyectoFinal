@@ -4,7 +4,9 @@
     Author     : Esteban Miranda
 --%>
 <%@page import ="modelo.Genero"%>
+<%@page import ="modelo.Cliente"%>
 <%@page import ="java.util.HashMap"%>
+<%@page import="javax.swing.table.DefaultTableModel" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -20,7 +22,10 @@
     <body>
         <h1>Formulario Clientes</h1>
             <div class ="container">
-                <form action ="" method="post" class="form-group">
+                <form action="sr_cliente" method="post" class="form-group">
+                    <label for="lbl_id">Id</label>
+                    <input type="text" name="txt_id" id="txt_id" class="form-control" readonly>
+
                     <label for="lbl_nombres">Nombres</label>
                     <input type="text" name="txt_nombres" id="txt_nombres" class="form-control" placeholder="Ejemplo: Luis Manuel" required>
                     
@@ -41,8 +46,6 @@
                             }  
                         %>
                         
-                        
-                        
                     </select>
 
                     <label for="lbl_telefono">Telefono</label>
@@ -55,9 +58,48 @@
                     <input type="date" name="txt_fecha_registro" id="txt_fecha_registro" class="form-control" placeholder="Ejemplo: 10/10/2024" required>
 
                     
-                    <br><button type="submit" name="btn_agregar" id="btn_agregar" class="btn btn-primary">Agregar</button>
+                    <br>
+                    <button type="submit" name="btn_agregar" id="btn_agregar" value="agregar" class="btn btn-primary">Agregar</button>
+                    <button type="submit" name="btn_modificar" id="btn_modificar" value="modificar" class="btn btn-info">Modificar</button>
+                    <button type="submit" name="btn_eliminar" id="btn_eliminar" value="eliminar" class="btn btn-danger" onclick="javascript:if(!confirm('¿Desea eliminar este registro?')) return false">Eliminar</button>
+                    <button type="submit" name="btn_cerrar" id="btn_cerrar" value="cerrar"class="btn btn-warning" data-dismiss="modal">Cerrar</button>
+
 
                 </form>
+                    <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Nit</th>
+                            <th>Genero</th>
+                            <th>Telefono</th>
+                            <th>Correo</th>
+                            <th>Fecha Registro</th>
+                          </tr>
+                        </thead>
+                        <tbody id ="tbl_clientes">
+                            <%
+                                Cliente cliente = new Cliente();
+                                DefaultTableModel tabla = new DefaultTableModel();
+                                tabla = cliente.leer();
+                                    for (int t=0;t<tabla.getRowCount();t++){
+                                    
+                                    //columna quq queremos leer pero no mostrar la del id del cliente
+                                    out.println("<tr data-id=" + tabla.getValueAt(t,0) + " data-id_g=" + tabla.getValueAt(t,8) + ">");
+                                    out.println("<td>" + tabla.getValueAt(t, 1) + "</td>");
+                                    out.println("<td>" + tabla.getValueAt(t, 2) + "</td>");
+                                    out.println("<td>" + tabla.getValueAt(t, 3) + "</td>");
+                                    out.println("<td>" + tabla.getValueAt(t, 4) + "</td>");
+                                    out.println("<td>" + tabla.getValueAt(t, 5) + "</td>");
+                                    out.println("<td>" + tabla.getValueAt(t, 6) + "</td>");
+                                    out.println("<td>" + tabla.getValueAt(t, 7) + "</td>");
+                                    out.println("</tr>");
+                                }
+
+                            %>
+                        </tbody>
+                    </table>
             </div>
         
         
