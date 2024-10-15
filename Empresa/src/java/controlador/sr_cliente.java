@@ -49,6 +49,26 @@ public class sr_cliente extends HttpServlet {
                     }
             }
             
+            if("modificar".equals(request.getParameter("btn_modificar"))){
+            Cliente cliente = new Cliente(request.getParameter("txt_correo"),request.getParameter("txt_fecha_registro"),Integer.parseInt(request.getParameter("drop_genero")),Integer.parseInt(request.getParameter("txt_id")),request.getParameter("txt_nombres"),request.getParameter("txt_apellidos"),request.getParameter("txt_nit"),request.getParameter("txt_telefono"));
+                    if(cliente.modificar()>0){
+                        response.sendRedirect("Clientes.jsp");
+                    }else{
+                        out.println("<h1>Error al insertar el registro</h1>");
+                        out.println("<a href ='Clientes.jsp'>Regresar</a>");
+                    }
+            }
+            
+            if("eliminar".equals(request.getParameter("btn_eliminar"))){
+            Cliente cliente = new Cliente(Integer.parseInt(request.getParameter("txt_id")));
+                    if(cliente.eliminar()>0){
+                        response.sendRedirect("Clientes.jsp");
+                    }else{
+                        out.println("<h1>Error al insertar el registro</h1>");
+                        out.println("<a href ='Clientes.jsp'>Regresar</a>");
+                    }
+            }
+            
             out.println("</body>");
             out.println("</html>");
         }

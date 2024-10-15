@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class Cliente extends Persona{
     private String correo, fecha_registro;
-    private int id_genero, estado;
+    private int id_genero, id_cliente;
     private Conexion cn;
 
     
@@ -32,6 +32,20 @@ public class Cliente extends Persona{
         this.id_genero = id_genero;
         this.cn = new Conexion(); // Inicializa la conexión aquí también
     }
+
+    public Cliente(String correo, String fecha_registro, int id_genero, int id_cliente, String nombres, String apellidos, String nit, String telefono) {
+        super(nombres, apellidos, nit, telefono);
+        this.correo = correo;
+        this.fecha_registro = fecha_registro;
+        this.id_genero = id_genero;
+        this.id_cliente = id_cliente;
+    }
+
+    public Cliente(int id_cliente) {
+        this.id_cliente = id_cliente;
+    }
+    
+    
     
     
 
@@ -59,12 +73,12 @@ public class Cliente extends Persona{
         this.id_genero = id_genero;
     }
 
-    public int getEstado() {
-        return estado;
+    public int getId_cliente() {
+        return id_cliente;
     }
 
-    public void setEstado(int estado) {
-        this.estado = estado;
+    public void setId_cliente(int id_cliente) {
+        this.id_cliente = id_cliente;
     }
     
     public DefaultTableModel leer(){
@@ -72,7 +86,7 @@ public class Cliente extends Persona{
         try{
             cn = new Conexion();
             cn.abrir_conexion();
-            String query = "SELECT c.id_cliente AS id, c.nombres, c.apellidos, c.nit, g.nombre_genero, c.telefono, c.correo_electronico, c.fecha_registro, g.id_genero FROM clientes AS c INNER JOIN generos AS g ON c.id_genero = g.id_genero;";
+            String query = "SELECT c.id_cliente AS id, c.nombres, c.apellidos, c.nit, g.nombre_genero, c.telefono, c.correo_electronico, c.fecha_registro, g.id_genero FROM clientes AS c INNER JOIN generos AS g ON c.id_genero = g.id_genero WHERE c.estado = 'activo';";
             ResultSet consulta = cn.conexionBD.createStatement().executeQuery(query);
             String encabezado[] = {"id", "nombres", "apellidos", "nit", "genero", "telefono", "correo", "fecha registro", "id_genero"};
             tabla.setColumnIdentifiers(encabezado);
@@ -125,4 +139,58 @@ public class Cliente extends Persona{
         }
         return retorno;
     }
+    
+    @Override
+    public int modificar(){
+        int retorno = 0;
+        try{           
+            cn = new Conexion();
+            PreparedStatement parametro;
+            
+            String query = "UPDATE clientes SET nombres = ?, apellidos = ?, nit = ?, id_genero = ?, telefono = ?, correo_electronico = ?, fecha_registro = ? WHERE id_cliente = ?;";
+            cn.abrir_conexion();
+            parametro = (PreparedStatement)cn.conexionBD.prepareStatement(query);
+            parametro.setString(1, getNombres());
+            parametro.setString(2, getApellidos());
+            parametro.setString(3, getNit());
+            parametro.setInt(4, getId_genero());
+            parametro.setString(5, getTelefono());
+            parametro.setString(6, getCorreo());
+            parametro.setString(7, getFecha_registro());
+            parametro.setInt(8, getId_cliente());
+
+            retorno = parametro.executeUpdate();
+            
+            cn.cerrar_conexion();
+        }catch(SQLException ex){
+            System.out.println("Error..." + ex.getMessage());
+            retorno = 0;
+        }
+        return retorno;
+    }
+
+    
+    @Override
+    public int eliminar(){
+        int retorno = 0;
+        try{           
+            cn = new Conexion();
+            PreparedStatement parametro;
+            
+            String query = "UPDATE clientes SET estado = ? WHERE id_cliente = ?;";
+            cn.abrir_conexion();
+            parametro = (PreparedStatement)cn.conexionBD.prepareStatement(query);
+            parametro.setString(1, ("inactivo"));
+            parametro.setInt(2, getId_cliente());
+
+            retorno = parametro.executeUpdate();
+            
+            cn.cerrar_conexion();
+        }catch(SQLException ex){
+            System.out.println("Error..." + ex.getMessage());
+            retorno = 0;
+        }
+        return retorno;
+    }
+
 }
