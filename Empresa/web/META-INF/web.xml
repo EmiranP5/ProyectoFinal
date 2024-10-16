@@ -8,6 +8,16 @@
         <servlet-name>sr_cliente</servlet-name>
         <url-pattern>/sr_cliente</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+    <servlet-name>sr_gu</servlet-name>
+    <servlet-class>controlador.sr_gu</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+    <servlet-name>sr_gu</servlet-name>
+    <url-pattern>/sr_gu</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
