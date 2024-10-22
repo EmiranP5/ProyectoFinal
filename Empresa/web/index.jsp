@@ -97,23 +97,26 @@
     </button>
     <div class="dropdown-menu">
         <a class="dropdown-item" href="Puestos.jsp">
-        <i class="bi bi-people"></i> PUESTOS
-      </a>
+            <i class="bi bi-people"></i> PUESTOS
+        </a>
         <a class="dropdown-item" href="Empleados.jsp">
-        <i class="bi bi-tags"></i> EMPLEADOS
-      </a>
+            <i class="bi bi-tags"></i> EMPLEADOS
+        </a>
         <a class="dropdown-item" href="Clientes.jsp">
-        <i class="bi bi-person-standing"></i> CLIENTES
-      </a>
+            <i class="bi bi-person-standing"></i> CLIENTES
+        </a>
         <a class="dropdown-item" href="Proveedores.jsp">
-        <i class="bi bi-box-seam"></i> PROVEEDORES
-      </a>
+            <i class="bi bi-box-seam"></i> PROVEEDORES
+        </a>
         <a class="dropdown-item" href="Marcas.jsp">
-        <i class="bi bi-briefcase"></i> MARCAS
-      </a>
+            <i class="bi bi-briefcase"></i> MARCAS
+        </a>
         <a class="dropdown-item" href="Productos.jsp">
-        <i class="bi bi-briefcase"></i> PRODUCTOS
-      </a>
+            <i class="bi bi-briefcase"></i> PRODUCTOS
+        </a>
+        <a class="dropdown-item" href="Ventas.jsp">
+            <i class="bi bi-briefcase"></i> VENTAS
+        </a>
     </div>
   </div>
 </div>
