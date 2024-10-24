@@ -1,4 +1,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="modelo.Venta"%>
+<%@page import ="java.util.HashMap"%>
+<%@page import="javax.swing.table.DefaultTableModel" %>
+
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -36,20 +40,52 @@
                     <div class="row mt-2">
                         <div class="col">
                             <label>Producto:</label>
-                            <select name="producto[]" class="form-control">
-                                <option value="1">Producto 1</option>
-                                <option value="2">Producto 2</option>
-                                <option value="3">Producto 3</option>
+                            <select name="producto[]" class="form-control" onchange="actualizarPrecio(this)">
+                                <option value="" disabled selected>Seleccione un producto</option>
+            <%
+                                    // Obtenemos los productos desde la base de datos
+                                    Venta venta = new Venta();
+                                    HashMap<Integer, String> drop = venta.obtenerProductos();
+                                    for (Integer id : drop.keySet()) {
+                                        String[] datos = drop.get(id).split(","); // Separa el nombre y el precio
+                                        out.println("<option value='" + id + "' data-precio='" + datos[1] + "'>" + datos[0] + "</option>");
+                                    }
+            %>
                             </select>
                         </div>
                         <div class="col">
                             <label>Cantidad:</label>
                             <input type="number" name="cantidad[]" class="form-control" placeholder="Cantidad" min="1" required>
                         </div>
+                        <div class="col">
+                            <label>Precio:</label>
+                            <input type="number" name="precio[]" class="form-control" placeholder="0.00" readonly>
+                        </div>
                     </div>`;
+            // Insertar el nuevo campo de producto al contenedor
+            $('#productosContainer').append(nuevoProducto);
+            }
 
-                // Insertar el nuevo campo de producto al contenedor
-                $('#productosContainer').append(nuevoProducto);
+            function actualizarPrecio(selectElement) {
+            var selectedOption = selectElement.options[selectElement.selectedIndex];
+            var precio = selectedOption.getAttribute('data-precio');
+            // Actualiza el campo de precio
+            var cantidadInput = $(selectElement).closest('.row').find('input[name="cantidad[]"]');
+            var precioInput = $(selectElement).closest('.row').find('input[name="precio[]"]');
+            // Actualiza el precio cuando cambia la cantidad
+            cantidadInput.on('input', function() {
+            var cantidad = $(this).val();
+            var totalPrecio = (cantidad * precio).toFixed(2); // Calcular el precio total
+            precioInput.val(totalPrecio); // Mostrar el precio total
+            });
+            // Si la cantidad ya fue ingresada, calcular el precio inicial
+            if (cantidadInput.val()) {
+            var cantidad = cantidadInput.val();
+            var totalPrecio = (cantidad * precio).toFixed(2);
+            precioInput.val(totalPrecio);
+            } else {
+            precioInput.val(''); // Limpiar si no hay cantidad
+            }
             }
         </script>
     </head>
@@ -93,20 +129,66 @@
 
                                 <div class="row mt-3">
                                     <div class="col-md-6">
-                                        <label for="lbl_cliente">Cliente</label>
-                                        <select name="drop_cliente" id="drop_cliente" class="form-control" required>
-                                            <!-- Este select se llenará dinámicamente por AJAX -->
-                                        </select>
+                                        <label for="txt_nit_cliente">NIT Cliente</label>
+                                        <input type="text" id="txt_nit_cliente" class="form-control" placeholder="Ingrese NIT" required>
                                     </div>
-
                                     <div class="col-md-6">
-                                        <label for="lbl_empleado">Empleado</label>
-                                        <select name="drop_empleado" id="drop_empleado" class="form-control" required>
-                                            <option value="1">Empleado 1</option>
-                                            <option value="2">Empleado 2</option>
-                                        </select>
+                                        <label for="txt_nombre_cliente">Nombre Cliente</label>
+                                        <input type="text" id="txt_nombre_cliente" class="form-control" readonly>
                                     </div>
                                 </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <label for="txt_telefono_cliente">Teléfono Cliente</label>
+                                        <input type="text" id="txt_telefono_cliente" class="form-control" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="txt_correo_cliente">Correo Cliente</label>
+                                        <input type="text" id="txt_correo_cliente" class="form-control" readonly>
+                                    </div>
+                                </div>
+
+                                <script type="text/javascript">
+                                    $(document).ready(function() {
+                                        $('#txt_nit_cliente').blur(function() {
+                                            var nit = $(this).val();
+                                            if (nit !== '') {
+                                                $.ajax({
+                                                    type: 'GET',
+                                                    url: 'sr_venta',
+                                                    data: {action: 'buscarCliente', nit: nit},
+                                                    success: function(data) {
+                                                    var datos = data.split(',');
+                                                        $('#txt_nombre_cliente').val(datos[0]); // Nombre completo
+                                                        $('#txt_telefono_cliente').val(datos[1]); // Teléfono
+                                                        $('#txt_correo_cliente').val(datos[2]); // Correo
+                                                    },
+                                                    error: function() {
+                                                        alert('Cliente no encontrado o error en la consulta.');
+                                                    }
+                                                });
+                                            } else {
+                                                $('#txt_nombre_cliente').val('');
+                                                $('#txt_telefono_cliente').val('');
+                                                $('#txt_correo_cliente').val('');
+                                            }
+                                        });
+                                    });
+                                </script>
+
+                                <br>  
+                                <label for="lbl_empleado">Empleado</label>
+                                <select name="drop_empleado" id="drop_empleado" class="form-control" required>
+                                    <option value="" disabled selected>Seleccione al empleado</option> <!-- Opción por defecto -->
+                                    <%
+                                        venta = new Venta();
+                                        HashMap<String, String> dropE = venta.drop_nombre_empleado();
+                                        for (String i : dropE.keySet()) {
+                                            out.println("<option value='" + i + "'>" + dropE.get(i) + "</option>");
+                                        }
+                                    %>
+                                </select>
 
                                 <!-- Contenedor donde se agregarán dinámicamente los productos -->
                                 <h4 class="mt-4">Productos</h4>
@@ -115,15 +197,26 @@
                                     <div class="row">
                                         <div class="col">
                                             <label>Producto:</label>
-                                            <select name="producto[]" class="form-control">
-                                                <option value="1">Producto 1</option>
-                                                <option value="2">Producto 2</option>
-                                                <option value="3">Producto 3</option>
+                                            <select name="producto[]" class="form-control" onchange="actualizarPrecio(this)">
+                                                <option value="" disabled selected>Seleccione un producto</option>
+                                                <%
+                                                    // Obtenemos los productos desde la base de datos
+                                                    venta = new Venta();
+                                                    HashMap<Integer, String> dropP = venta.obtenerProductos();
+                                                    for (Integer id : dropP.keySet()) {
+                                                        String[] datos = drop.get(id).split(","); // Separa el nombre y el precio
+                                                        out.println("<option value='" + id + "' data-precio='" + datos[1] + "'>" + datos[0] + "</option>");
+                                                    }
+                                                %>
                                             </select>
                                         </div>
                                         <div class="col">
                                             <label>Cantidad:</label>
                                             <input type="number" name="cantidad[]" class="form-control" placeholder="Cantidad" min="1" required>
+                                        </div>
+                                        <div class="col">
+                                            <label>Precio:</label>
+                                            <input type="number" name="precio[]" class="form-control" placeholder="0.00" readonly>
                                         </div>
                                     </div>
                                 </div>

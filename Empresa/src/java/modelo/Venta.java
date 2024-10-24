@@ -1,14 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 
 package modelo;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.sql.PreparedStatement;
-import javax.swing.table.DefaultTableModel;
+import java.util.HashMap;
+
 
 public class Venta {
     private int id_venta;
@@ -18,6 +15,7 @@ public class Venta {
     private int id_cliente;
     private int id_empleado;
 
+    // Constructores
     public Venta(int id_venta, int no_factura, String serie, String fecha_factura, int id_cliente, int id_empleado) {
         this.id_venta = id_venta;
         this.no_factura = no_factura;
@@ -27,9 +25,9 @@ public class Venta {
         this.id_empleado = id_empleado;
     }
 
-    public Venta() {
-    }
+    public Venta() {}
 
+    // Getters y Setters
     public int getId_venta() {
         return id_venta;
     }
@@ -77,17 +75,39 @@ public class Venta {
     public void setId_empleado(int id_empleado) {
         this.id_empleado = id_empleado;
     }
-    
-        public HashMap<String, String> drop_nombre_cliente() {
-        HashMap<String, String> drop = new HashMap<>();
+    public String obtenerDatosClientePorNIT(String nit) {
+        String clienteData = "";
         try {
             Conexion cn = new Conexion();
             cn.abrir_conexion();
-            String query = "SELECT id_cliente, CONCAT(nombres, ' ', apellidos) AS nombre_completo FROM clientes;";
+            String query = "SELECT CONCAT(nombres, ' ', apellidos) AS nombre_completo, telefono, correo_electronico FROM clientes WHERE nit = ? AND estado = 'activo';";
+            PreparedStatement pst = cn.conexionBD.prepareStatement(query);
+            pst.setString(1, nit);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                clienteData = rs.getString("nombre_completo") + "," + rs.getString("telefono") + "," + rs.getString("correo_electronico");
+            }
+            cn.cerrar_conexion();
+        } catch (SQLException ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+        return clienteData;
+    }
+
+    
+    public HashMap<String, String> drop_nombre_empleado() {
+        HashMap<String, String> drop = new HashMap<>();
+
+        try {
+            Conexion cn = new Conexion();
+            cn.abrir_conexion();
+            // Concatenar nombres y apellidos
+            String query = "SELECT id_empleado AS id, CONCAT(nombres, ' ', apellidos) AS nombre_completo FROM empleados WHERE estado = 'activo';";
             ResultSet consulta = cn.conexionBD.createStatement().executeQuery(query);
 
             while (consulta.next()) {
-                drop.put(consulta.getString("id_cliente"), consulta.getString("nombre_completo"));
+                drop.put(consulta.getString("id"), consulta.getString("nombre_completo")); // Usar el nombre completo
             }
             cn.cerrar_conexion();
         } catch (SQLException ex) {
@@ -96,32 +116,29 @@ public class Venta {
         return drop;
     }
 
-    public void insertarVenta() {
+    public HashMap<Integer, String> obtenerProductos() {
+        HashMap<Integer, String> productos = new HashMap<>();
+
         try {
-            // Abre la conexión a la base de datos
             Conexion cn = new Conexion();
             cn.abrir_conexion();
+            String query = "SELECT id_producto, producto, precio_venta FROM productos WHERE estado = 'activo';";
+            ResultSet consulta = cn.conexionBD.createStatement().executeQuery(query);
 
-            // Define la consulta SQL para insertar la venta
-            String query = "INSERT INTO ventas (no_factura, serie, fecha_factura, id_cliente, id_empleado) VALUES (?, ?, ?, ?, ?)";
-
-            // Prepara la sentencia
-            PreparedStatement pst = cn.conexionBD.prepareStatement(query);
-            pst.setInt(1, this.no_factura);
-            pst.setString(2, this.serie);
-            pst.setString(3, this.fecha_factura);
-            pst.setInt(4, this.id_cliente);
-            pst.setInt(5, this.id_empleado);
-
-            // Ejecuta la inserción
-            pst.executeUpdate();
-
-            // Cierra la conexión
-            pst.close();
+            while (consulta.next()) {
+                int id = consulta.getInt("id_producto");
+                String nombre = consulta.getString("producto");
+                double precio = consulta.getDouble("precio_venta");
+                productos.put(id, nombre + "," + precio); // Almacena el precio junto con el nombre
+            }
             cn.cerrar_conexion();
         } catch (SQLException ex) {
-            System.out.println("Error al insertar la venta: " + ex.getMessage());
+            System.out.println("Error: " + ex.getMessage());
         }
+        return productos;
     }
 
+
 }
+
+    
