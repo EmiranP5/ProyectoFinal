@@ -13,6 +13,11 @@
     <servlet-name>sr_gu</servlet-name>
     <servlet-class>controlador.sr_gu</servlet-class>
     </servlet>
+    
+        <servlet-mapping>
+        <servlet-name>sr_puesto</servlet-name>
+        <url-pattern>/sr_puesto</url-pattern>
+    </servlet-mapping>
 
     <servlet-mapping>
     <servlet-name>sr_gu</servlet-name>
