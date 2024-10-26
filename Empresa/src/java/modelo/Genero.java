@@ -12,7 +12,7 @@ public class Genero {
 
     private String genero;
     private int id_puesto;
-    private Conexion cn;  
+    private conexion cn;  
     
     public Genero(){}
 
@@ -42,7 +42,7 @@ public class Genero {
         HashMap<String, String> drop = new HashMap<>();
 
         try {
-            cn = new Conexion();
+            cn = new conexion();
             cn.abrir_conexion();
             String query = "SELECT id_genero AS id, nombre_genero FROM generos;";
             ResultSet consulta = cn.conexionBD.createStatement().executeQuery(query);

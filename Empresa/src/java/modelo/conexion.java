@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class Conexion {
+public class conexion {
     
     public Connection conexionBD;
     public final String bd = "db_sistema_de_gestion_de_ventas";

@@ -7,7 +7,7 @@ package modelo;  // Asegúrate de que este paquete coincida con el tuyo
 public class TestConexion {
 
     public static void main(String[] args) {
-        Conexion cn = new Conexion();
+        conexion cn = new conexion();
         cn.abrir_conexion();  // Intenta abrir la conexión
 
         if (cn.conexionBD != null) {

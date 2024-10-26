@@ -9,7 +9,7 @@ import javax.swing.table.DefaultTableModel;
 public class Puesto {
     private int id_puesto;
     private String puesto;
-    private Conexion cn;
+    private conexion cn;
 
     // Constructor
     public Puesto() {}
@@ -39,7 +39,7 @@ public class Puesto {
     public DefaultTableModel leer() {
         DefaultTableModel tabla = new DefaultTableModel();
         try {
-            cn = new Conexion();
+            cn = new conexion();
             cn.abrir_conexion();
             String query = "SELECT id_Puesto as id, puesto FROM puesto WHERE estado = 1;"; // Solo muestra puestos activos
             ResultSet consulta = cn.conexionBD.createStatement().executeQuery(query);
