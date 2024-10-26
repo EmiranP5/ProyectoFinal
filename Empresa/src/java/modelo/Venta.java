@@ -78,7 +78,7 @@ public class Venta {
     public String obtenerDatosClientePorNIT(String nit) {
         String clienteData = "";
         try {
-            Conexion cn = new Conexion();
+            conexion cn = new conexion();
             cn.abrir_conexion();
             String query = "SELECT CONCAT(nombres, ' ', apellidos) AS nombre_completo, telefono, correo_electronico FROM clientes WHERE nit = ? AND estado = 'activo';";
             PreparedStatement pst = cn.conexionBD.prepareStatement(query);
@@ -100,7 +100,7 @@ public class Venta {
         HashMap<String, String> drop = new HashMap<>();
 
         try {
-            Conexion cn = new Conexion();
+            conexion cn = new conexion();
             cn.abrir_conexion();
             // Concatenar nombres y apellidos
             String query = "SELECT id_empleado AS id, CONCAT(nombres, ' ', apellidos) AS nombre_completo FROM empleados WHERE estado = 'activo';";
@@ -120,7 +120,7 @@ public class Venta {
         HashMap<Integer, String> productos = new HashMap<>();
 
         try {
-            Conexion cn = new Conexion();
+            conexion cn = new conexion();
             cn.abrir_conexion();
             String query = "SELECT id_producto, producto, precio_venta FROM productos WHERE estado = 'activo';";
             ResultSet consulta = cn.conexionBD.createStatement().executeQuery(query);
