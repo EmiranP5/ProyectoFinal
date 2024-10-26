@@ -14,7 +14,7 @@ public class conexion {
     public final String bd = "db_sistema_de_gestion_de_ventas";
     public final String urlConexion = String.format("jdbc:mysql://localhost:3306/%s", bd);
     public final String usuario = "root";
-    public final String contra = "1234";
+    public final String contra = "12345678";
     public final String jdbc = "com.mysql.cj.jdbc.Driver";
     
     public void abrir_conexion(){
