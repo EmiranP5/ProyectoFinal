@@ -14,13 +14,13 @@ import javax.swing.table.DefaultTableModel;
 public class Cliente extends Persona{
     private String correo, fecha_registro;
     private int id_genero, id_cliente;
-    private Conexion cn;
+    private conexion cn;
 
     
     // Constructor por defecto
     public Cliente() {
         // Inicializar la conexión aquí
-        cn = new Conexion();  // Ahora cn no será null
+        cn = new conexion();  // Ahora cn no será null
     }
 
     
@@ -30,7 +30,7 @@ public class Cliente extends Persona{
         this.correo = correo;
         this.fecha_registro = fecha_registro;
         this.id_genero = id_genero;
-        this.cn = new Conexion(); // Inicializa la conexión aquí también
+        this.cn = new conexion(); // Inicializa la conexión aquí también
     }
 
     public Cliente(String correo, String fecha_registro, int id_genero, int id_cliente, String nombres, String apellidos, String nit, String telefono) {
@@ -84,7 +84,7 @@ public class Cliente extends Persona{
     public DefaultTableModel leer(){
         DefaultTableModel tabla = new DefaultTableModel();
         try{
-            cn = new Conexion();
+            cn = new conexion();
             cn.abrir_conexion();
             String query = "SELECT c.id_cliente AS id, c.nombres, c.apellidos, c.nit, g.nombre_genero, c.telefono, c.correo_electronico, c.fecha_registro, g.id_genero FROM clientes AS c INNER JOIN generos AS g ON c.id_genero = g.id_genero WHERE c.estado = 'activo';";
             ResultSet consulta = cn.conexionBD.createStatement().executeQuery(query);
@@ -116,7 +116,7 @@ public class Cliente extends Persona{
     public int agregar(){
         int retorno = 0;
         try{           
-            cn = new Conexion();
+            cn = new conexion();
             PreparedStatement parametro;
             
             String query = "INSERT INTO clientes (nombres, apellidos, nit, id_genero, telefono, correo_electronico, fecha_registro) VALUES (?,?,?,?,?,?,?);";
@@ -144,7 +144,7 @@ public class Cliente extends Persona{
     public int modificar(){
         int retorno = 0;
         try{           
-            cn = new Conexion();
+            cn = new conexion();
             PreparedStatement parametro;
             
             String query = "UPDATE clientes SET nombres = ?, apellidos = ?, nit = ?, id_genero = ?, telefono = ?, correo_electronico = ?, fecha_registro = ? WHERE id_cliente = ?;";
@@ -174,7 +174,7 @@ public class Cliente extends Persona{
     public int eliminar(){
         int retorno = 0;
         try{           
-            cn = new Conexion();
+            cn = new conexion();
             PreparedStatement parametro;
             
             String query = "UPDATE clientes SET estado = ? WHERE id_cliente = ?;";

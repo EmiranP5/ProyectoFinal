@@ -17,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
 public class Marca {
     private int id_marca;
     private String marca;
-    private Conexion cn;
+    private conexion cn;
 
     public Marca() {}
 
@@ -46,7 +46,7 @@ public class Marca {
     public DefaultTableModel leer(){
         DefaultTableModel tabla = new DefaultTableModel();
         try{
-            cn = new Conexion();
+            cn = new conexion();
             cn.abrir_conexion();
             String query = "SELECT id_marca as id, marca FROM marcas WHERE estado = 1;";
             ResultSet consulta = cn.conexionBD.createStatement().executeQuery(query);
@@ -69,7 +69,7 @@ public class Marca {
         int retorno = 0;
         try{
             PreparedStatement parametro;
-            cn = new Conexion();
+            cn = new conexion();
             String query = "INSERT INTO marcas (marca, estado) VALUES (?, 1);";
             cn.abrir_conexion();
             parametro = (PreparedStatement) cn.conexionBD.prepareStatement(query);
@@ -88,7 +88,7 @@ public class Marca {
         int retorno = 0;
         try{
             PreparedStatement parametro;
-            cn = new Conexion();
+            cn = new conexion();
             String query = "UPDATE marcas SET marca = ? WHERE id_marca = ?;";
             cn.abrir_conexion();
             parametro = (PreparedStatement) cn.conexionBD.prepareStatement(query);
@@ -108,7 +108,7 @@ public class Marca {
         int retorno = 0;
         try{
             PreparedStatement parametro;
-            cn = new Conexion();
+            cn = new conexion();
             //cambiarlo a update para cambiar el estado de la marca si es true o false campo bool
             String query = "UPDATE marcas SET estado = 0 WHERE id_marca = ?;";
             cn.abrir_conexion();
@@ -126,7 +126,7 @@ public class Marca {
     public HashMap drop_sangre(){
     HashMap<String,String> drop = new HashMap();
     try{
-        cn = new Conexion();
+        cn = new conexion();
         String query = "SELECT id_marca as id, marca FROM marcas;";
         cn.abrir_conexion();
         ResultSet consulta = cn.conexionBD.createStatement().executeQuery(query);
