@@ -3,6 +3,13 @@
 <%@page import ="java.util.HashMap"%>
 <%@page import="javax.swing.table.DefaultTableModel" %>
 
+<%
+    Venta venta = new Venta(); // Instancia única de Venta
+    HashMap<Integer, String> dropP = venta.obtenerProductos(); // Obtener productos
+    HashMap<String, String> dropE = venta.drop_nombre_empleado(); // Obtener empleados
+
+%>
+
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -36,18 +43,16 @@
         <script>
             // Función para añadir un nuevo producto
             function agregarProducto() {
-                var nuevoProducto = `
+            var nuevoProducto = `
                     <div class="row mt-2">
                         <div class="col">
                             <label>Producto:</label>
                             <select name="producto[]" class="form-control" onchange="actualizarPrecio(this)">
                                 <option value="" disabled selected>Seleccione un producto</option>
-            <%
+            <% 
                                     // Obtenemos los productos desde la base de datos
-                                    Venta venta = new Venta();
-                                    HashMap<Integer, String> drop = venta.obtenerProductos();
-                                    for (Integer id : drop.keySet()) {
-                                        String[] datos = drop.get(id).split(","); // Separa el nombre y el precio
+                                    for (Integer id : dropP.keySet()) {
+                                        String[] datos = dropP.get(id).split(","); // Separa el nombre y el precio
                                         out.println("<option value='" + id + "' data-precio='" + datos[1] + "'>" + datos[0] + "</option>");
                                     }
             %>
@@ -67,25 +72,27 @@
             }
 
             function actualizarPrecio(selectElement) {
-            var selectedOption = selectElement.options[selectElement.selectedIndex];
-            var precio = selectedOption.getAttribute('data-precio');
+                var selectedOption = selectElement.options[selectElement.selectedIndex];
+                var precio = selectedOption.getAttribute('data-precio');
+
             // Actualiza el campo de precio
-            var cantidadInput = $(selectElement).closest('.row').find('input[name="cantidad[]"]');
-            var precioInput = $(selectElement).closest('.row').find('input[name="precio[]"]');
+                var cantidadInput = $(selectElement).closest('.row').find('input[name="cantidad[]"]');
+                var precioInput = $(selectElement).closest('.row').find('input[name="precio[]"]');
+
             // Actualiza el precio cuando cambia la cantidad
-            cantidadInput.on('input', function() {
-            var cantidad = $(this).val();
-            var totalPrecio = (cantidad * precio).toFixed(2); // Calcular el precio total
-            precioInput.val(totalPrecio); // Mostrar el precio total
-            });
-            // Si la cantidad ya fue ingresada, calcular el precio inicial
-            if (cantidadInput.val()) {
-            var cantidad = cantidadInput.val();
-            var totalPrecio = (cantidad * precio).toFixed(2);
-            precioInput.val(totalPrecio);
-            } else {
-            precioInput.val(''); // Limpiar si no hay cantidad
-            }
+                cantidadInput.on('input', function() {
+                    var cantidad = $(this).val();
+                    var totalPrecio = (cantidad * precio).toFixed(2); // Calcular el precio total
+                    precioInput.val(totalPrecio); // Mostrar el precio total
+                });
+                // Si la cantidad ya fue ingresada, calcular el precio inicial
+                if (cantidadInput.val()) {
+                    var cantidad = cantidadInput.val();
+                    var totalPrecio = (cantidad * precio).toFixed(2);
+                    precioInput.val(totalPrecio);
+                } else {
+                    precioInput.val(''); // Limpiar si no hay cantidad
+                }
             }
         </script>
     </head>
@@ -108,6 +115,7 @@
 
                         <!-- Cuerpo del modal -->
                         <div class="modal-body">
+
                             <!-- Formulario para registrar la venta -->
                             <form action="sr_venta" method="post" id="ventaForm" class="form-group">
 
@@ -159,7 +167,7 @@
                                                     url: 'sr_venta',
                                                     data: {action: 'buscarCliente', nit: nit},
                                                     success: function(data) {
-                                                    var datos = data.split(',');
+                                                        var datos = data.split(',');
                                                         $('#txt_nombre_cliente').val(datos[0]); // Nombre completo
                                                         $('#txt_telefono_cliente').val(datos[1]); // Teléfono
                                                         $('#txt_correo_cliente').val(datos[2]); // Correo
@@ -182,8 +190,6 @@
                                 <select name="drop_empleado" id="drop_empleado" class="form-control" required>
                                     <option value="" disabled selected>Seleccione al empleado</option> <!-- Opción por defecto -->
                                     <%
-                                        venta = new Venta();
-                                        HashMap<String, String> dropE = venta.drop_nombre_empleado();
                                         for (String i : dropE.keySet()) {
                                             out.println("<option value='" + i + "'>" + dropE.get(i) + "</option>");
                                         }
@@ -201,10 +207,8 @@
                                                 <option value="" disabled selected>Seleccione un producto</option>
                                                 <%
                                                     // Obtenemos los productos desde la base de datos
-                                                    venta = new Venta();
-                                                    HashMap<Integer, String> dropP = venta.obtenerProductos();
                                                     for (Integer id : dropP.keySet()) {
-                                                        String[] datos = drop.get(id).split(","); // Separa el nombre y el precio
+                                                        String[] datos = dropP.get(id).split(","); // Separa el nombre y el precio
                                                         out.println("<option value='" + id + "' data-precio='" + datos[1] + "'>" + datos[0] + "</option>");
                                                     }
                                                 %>
@@ -221,21 +225,20 @@
                                     </div>
                                 </div>
 
-                                <!-- Botón para agregar otro producto -->
-                                <button type="button" class="btn btn-success mt-3" onclick="agregarProducto()">Agregar otro producto</button>
+                                <button type="button" class="btn btn-secondary mt-3" onclick="agregarProducto()">Agregar Producto</button>
+                                <br><br>
+                                <button type="submit" class="btn btn-primary mt-3">Guardar Venta</button>
                             </form>
                         </div>
 
                         <!-- Pie del modal -->
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-custom" form="ventaForm">Registrar Venta</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     </body>
