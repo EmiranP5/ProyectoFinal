@@ -52,7 +52,7 @@ public class sr_proveedor extends HttpServlet {
                
                // Llamamos al método agregar
                if(proveedor.agregar() > 0){
-                   response.sendRedirect("index.jsp");
+                   response.sendRedirect("Proveedores.jsp");
                } else {
                    out.println("<h1>Error al agregar proveedor</h1>");
                    out.println("<a href='index.jsp'>Regresar</a>");
@@ -71,10 +71,10 @@ public class sr_proveedor extends HttpServlet {
                
                // Llamamos al método modificar
                if(proveedor.modificar() > 0){
-                   response.sendRedirect("index.jsp");
+                   response.sendRedirect("Proveedores.jsp");
                } else {
                    out.println("<h1>Error al modificar proveedor</h1>");
-                   out.println("<a href='index.jsp'>Regresar</a>");
+                   out.println("<a href='Proveedores.jsp'>Regresar</a>");
                }
            }
            
@@ -86,10 +86,10 @@ public class sr_proveedor extends HttpServlet {
                
                // Llamamos al método eliminar
                if(proveedor.eliminar() > 0){
-                   response.sendRedirect("index.jsp");
+                   response.sendRedirect("Proveedores.jsp");
                } else {
                    out.println("<h1>Error al eliminar proveedor</h1>");
-                   out.println("<a href='index.jsp'>Regresar</a>");
+                   out.println("<a href='Proveedores.jsp'>Regresar</a>");
                }
            }
             

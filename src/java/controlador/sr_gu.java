@@ -48,10 +48,10 @@ public class sr_gu extends HttpServlet {
                
                // Llamamos al método agregar
                if(marca.agregar() > 0){
-                   response.sendRedirect("index.jsp");
+                   response.sendRedirect("Marcas.jsp");
                } else {
                    out.println("<h1>Error al agregar la marca</h1>");
-                   out.println("<a href='index.jsp'>Regresar</a>");
+                   out.println("<a href='Marcas.jsp'>Regresar</a>");
                }
            } 
            
@@ -64,10 +64,10 @@ public class sr_gu extends HttpServlet {
                
                // Llamamos al método modificar
                if(marca.modificar() > 0){
-                   response.sendRedirect("index.jsp");
+                   response.sendRedirect("Marcas.jsp");
                } else {
                    out.println("<h1>Error al modificar la marca</h1>");
-                   out.println("<a href='index.jsp'>Regresar</a>");
+                   out.println("<a href='Marcas.jsp'>Regresar</a>");
                }
            }
            
@@ -79,10 +79,10 @@ public class sr_gu extends HttpServlet {
                
                // Llamamos al método eliminar
                if(marca.eliminar() > 0){
-                   response.sendRedirect("index.jsp");
+                   response.sendRedirect("Marcas.jsp");
                } else {
                    out.println("<h1>Error al eliminar la marca</h1>");
-                   out.println("<a href='index.jsp'>Regresar</a>");
+                   out.println("<a href='Marcas.jsp'>Regresar</a>");
                }
            }
             out.println("</body>");
