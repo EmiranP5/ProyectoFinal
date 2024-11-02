@@ -1,7 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="modelo.Venta"%>
-<%@page import ="java.util.HashMap"%>
-<%@page import="javax.swing.table.DefaultTableModel" %>
+<%@page import="java.util.HashMap"%>
+<%@page import="javax.swing.table.DefaultTableModel"%>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -76,7 +76,7 @@
                                 <div class="row mt-3">
                                     <div class="col-md-6">
                                         <label for="txt_nit_cliente">NIT Cliente</label>
-                                        <input type="text" name ="txt_nit_cliente" id="txt_nit_cliente" class="form-control" placeholder="Ingrese NIT" required>
+                                        <input type="text" name="txt_nit_cliente" id="txt_nit_cliente" class="form-control" placeholder="Ingrese NIT" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="txt_nombre_cliente">Nombre Cliente</label>
@@ -153,9 +153,8 @@
                                 <!-- Script para mostrar ID del empleado -->
                                 <script type="text/javascript">
                                     function mostrarIdEmpleado(selectElement) {
-                                        // Obtener el ID del empleado seleccionado
                                         var empleadoId = selectElement.value; 
-                                        document.getElementById('txt_id_empleado').value = empleadoId; // Asignar el ID al campo correspondiente
+                                        document.getElementById('txt_id_empleado').value = empleadoId;
                                     }
                                 </script>
 
@@ -196,7 +195,27 @@
                                     </div>
                                 </div>
 
-                                <!-- Script para productos dinámicos -->
+                                <script type="text/javascript">
+                                    function mostrarIdProducto(selectElement) {
+                                        var productoId = selectElement.value;
+                                        var precio = selectElement.options[selectElement.selectedIndex].getAttribute('data-precio');
+                                        var row = $(selectElement).closest('.producto');
+                                        row.find('input[name="txt_id_producto[]"]').val(productoId);
+                                        row.find('input[name="precio_unitario[]"]').val(precio);
+                                        calcularPrecioTotal(row.find('input[name="cantidad[]"]'));
+                                    }
+
+                                    function calcularPrecioTotal(cantidadInput) {
+                                        var row = $(cantidadInput).closest('.producto');
+                                        var precioUnitario = parseFloat(row.find('input[name="precio_unitario[]"]').val()) || 0;
+                                        var cantidad = parseFloat(cantidadInput.value) || 0;
+                                        var precioTotal = precioUnitario * cantidad;
+                                        row.find('input[name="precio_total[]"]').val(precioTotal.toFixed(2));
+                                    }
+                                </script>
+                            </form>
+                        </div>
+                                                                            <!-- Script para productos dinámicos -->
                                 <script type="text/javascript">
                                     function mostrarIdProducto(selectElement) {
                                         var productoId = selectElement.value;
@@ -222,21 +241,54 @@
                                         $('#productosContainer').append(nuevoProducto);
                                     }
                                 </script>
-
-                                <button type="button" class="btn btn-primary mt-3" onclick="agregarProducto()">Agregar otro producto</button>
-
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-success">Registrar Venta</button>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                </div>
-                            </form>
+                                                         <button type="button" class="btn btn-primary mt-3" onclick="agregarProducto()">Agregar otro producto</button>
+                   
+                        <!-- Pie del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary" form="ventaForm">Guardar Venta</button>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Bootstrap JS -->
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Tabla de ventas -->
+        <div class="container mt-4">
+            <h3>Listado de Ventas</h3>
+            <%
+                // Instancia de Venta y obtención del modelo de la tabla
+                Venta ventas = new Venta();
+                DefaultTableModel ventasTabla = ventas.leer();
+
+                // Generación de la tabla HTML
+                String[] columnas = {"id_venta", "no_factura", "serie", "id_cliente", "id_empleado", "estado", "total_venta", "fecha"};
+            %>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <% for (String columna : columnas) { %>
+                            <th><%= columna %></th>
+                        <% } %>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% 
+                        // Ciclo para recorrer las filas y columnas de la tabla
+                        for (int i = 0; i < ventasTabla.getRowCount(); i++) {
+                    %>
+                    <tr>
+                        <% for (int j = 0; j < ventasTabla.getColumnCount(); j++) { %>
+                            <td><%= ventasTabla.getValueAt(i, j) %></td>
+                        <% } %>
+                    </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
     </body>
-
 </html>

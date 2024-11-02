@@ -65,7 +65,7 @@ public class sr_venta extends HttpServlet {
             }
 
             // Redirigir a una página de éxito
-            response.sendRedirect("exito.jsp");
+            response.sendRedirect("Ventas.jsp");
         } catch (Exception e) {
             e.printStackTrace(); // Manejo de errores básico
             response.sendRedirect("error.jsp");

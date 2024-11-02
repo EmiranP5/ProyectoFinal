@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import javax.swing.table.DefaultTableModel;
 
 
 public class Venta {
@@ -83,6 +84,35 @@ public class Venta {
     public void setId_empleado(int id_empleado) {
         this.id_empleado = id_empleado;
     }
+    
+    public DefaultTableModel leer() {
+    DefaultTableModel tabla = new DefaultTableModel();
+    try {
+        conexion = new Conexion();
+        conexion.abrir_conexion();
+        String query = "SELECT id_venta, no_factura, serie, id_cliente, id_empleado, estado, total_venta, fecha FROM ventas WHERE estado = 'activo';";
+        ResultSet consulta = conexion.conexionBD.createStatement().executeQuery(query);
+        String encabezado[] = {"id_venta", "no_factura", "serie", "id_cliente", "id_empleado", "estado", "total_venta", "fecha"};
+        tabla.setColumnIdentifiers(encabezado);
+        String datos[] = new String[8];
+        while (consulta.next()) {
+            datos[0] = consulta.getString("id_venta");
+            datos[1] = consulta.getString("no_factura");
+            datos[2] = consulta.getString("serie");
+            datos[3] = consulta.getString("id_cliente");
+            datos[4] = consulta.getString("id_empleado");
+            datos[5] = consulta.getString("estado");
+            datos[6] = consulta.getString("total_venta");
+            datos[7] = consulta.getString("fecha");
+            tabla.addRow(datos);
+        }
+        conexion.cerrar_conexion();
+    } catch(SQLException ex) {
+        System.out.println(ex.getMessage());
+    }
+    return tabla;
+}
+
     public String obtenerDatosClientePorNIT(String nit) {
         String clienteData = "";
         try {
